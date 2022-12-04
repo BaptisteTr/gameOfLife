@@ -1,0 +1,9 @@
+#grid {
+    display: grid;
+    grid-template-columns: repeat(var(--columns-number), 1fr);
+    grid-template-rows: repeat(var(--lines-number), 1fr);
+    gap: 0;
+    border: 1px solid black;
+    grid-gap: 1px;
+    background-color: rgba(149, 165, 166, 40%);
+}

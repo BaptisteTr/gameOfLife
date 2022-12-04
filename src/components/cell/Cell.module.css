@@ -1,0 +1,25 @@
+.cell {
+
+    background-color: white;
+    aspect-ratio: 1 / 1;
+}
+
+.blue {
+    background-color: #0f6fc9;
+}
+
+.lightBlue {
+    background-color: #01A2E8;
+}
+
+.orange {
+    background-color: #ff9100;
+}
+
+.green {
+    background-color: #39d352;
+}
+
+.grey {
+    background-color: #95a5a6;
+}
