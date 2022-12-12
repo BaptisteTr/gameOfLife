@@ -4,11 +4,14 @@ import style from './Cell.module.css';
 type CellProps = {
     isAlive : boolean
     color? : string
+    rowIndex : number
+    columnIndex : number
+    toggleValue : (rowIndex : number, columnIndex : number) => void
 }
 
-export const Cell: FunctionComponent<CellProps> = ({isAlive, color = "lightBlue"}) => {
+export const Cell: FunctionComponent<CellProps> = ({isAlive, color = "lightBlue", toggleValue, rowIndex, columnIndex}) => {
 
 
-return <div className={style.cell +" "+ (isAlive ? style[color] : "")}>
+return <div onClick={() => toggleValue(rowIndex, columnIndex)} className={style.cell +" "+ (isAlive ? style[color] : "")}>
 </div>;
 }
