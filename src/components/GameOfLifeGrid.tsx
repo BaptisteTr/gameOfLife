@@ -94,7 +94,7 @@ export const GameOfLifeGrid: FunctionComponent<GameOfLifeGridProps> = () => {
     useEffect(() => {
         const interval = setInterval(() => {setGrid(calculateNextIteration(grid))}, 50);
         return () => clearInterval(interval);
-    }, [grid,calculateNextIteration])
+    }, )
 
 
 
