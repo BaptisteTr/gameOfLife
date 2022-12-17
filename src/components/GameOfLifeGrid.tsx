@@ -2,6 +2,7 @@ import React, {FunctionComponent, useEffect, useState} from 'react';
 import style from './GameOfLifeGrid.module.css';
 import {Cell} from "./cell/Cell";
 import useWindowDimensions from "../hooks/useWindowDimensions";
+import {Menu} from "./menu/Menu";
 
 type GameOfLifeGridProps = {
 }
@@ -79,6 +80,8 @@ export const GameOfLifeGrid: FunctionComponent<GameOfLifeGridProps> = () => {
     }
 
     let [grid, setGrid] = useState<[boolean[]]>(firstGrid);
+    let [isRunning, setRunning] = useState<boolean>(false);
+    let [speed, setSpeed] = useState<number>(50);
 
     function handleChildClick(rowIndex : number, columnIndex : number) {
         const newGrid = copyGrid(grid)
@@ -92,8 +95,10 @@ export const GameOfLifeGrid: FunctionComponent<GameOfLifeGridProps> = () => {
     document.documentElement.style.setProperty('--grid-width', Math.round((width * 0.8)+columnsNumber)+'px');
 
     useEffect(() => {
-        const interval = setInterval(() => {setGrid(calculateNextIteration(grid))}, 50);
-        return () => clearInterval(interval);
+        if(isRunning) {
+            const interval = setInterval(() => {setGrid(calculateNextIteration(grid))}, 150 * (50/speed));
+            return () => clearInterval(interval);
+        }
     }, )
 
 
@@ -105,8 +110,11 @@ export const GameOfLifeGrid: FunctionComponent<GameOfLifeGridProps> = () => {
     });
 
 
-    return <div id={style["grid"]}> {
-            cells
-        }
-    </div>;
+    return <>
+        <div id={style["grid"]}> {cells}
+        </div>
+        <div id={style["menu"]}>
+            <Menu isRunning={isRunning} setRunning={setRunning} speed={speed} setSpeed={setSpeed}></Menu>
+        </div>
+    </>;
 }

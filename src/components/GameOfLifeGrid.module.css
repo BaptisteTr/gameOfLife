@@ -7,3 +7,15 @@
     grid-gap: 1px;
     background-color: rgba(149, 165, 166, 40%);
 }
+
+#menu {
+    display: flex;
+    flex-direction: row;
+    justify-items: auto;
+    align-items: stretch;
+    height : 10vh;
+}
+
+#menu > * {
+    flex: 1 1 0;
+}

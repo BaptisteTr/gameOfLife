@@ -1,0 +1,13 @@
+.item {
+    width : 33%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: row;
+
+}
+
+.item > div {
+    display: flex;
+    flex-direction: column;
+}
