@@ -1,4 +1,4 @@
-import React, {FunctionComponent, MutableRefObject, useContext, useRef} from 'react';
+import React, {FunctionComponent, useContext, useRef} from 'react';
 import style from './Menu.module.css';
 import {runningContext} from "../../hooks/runningContext";
 import {speedContext} from "../../hooks/speedContext";
