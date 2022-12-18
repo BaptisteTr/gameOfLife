@@ -1,4 +1,4 @@
-import React, { FunctionComponent, useContext} from 'react';
+import React, {FunctionComponent, MutableRefObject, useContext, useRef} from 'react';
 import style from './Menu.module.css';
 import {runningContext} from "../../hooks/runningContext";
 import {speedContext} from "../../hooks/speedContext";
@@ -15,6 +15,7 @@ export const Menu: FunctionComponent<MenuProps> = ({toggleRunning,setSpeed, setC
     const isRunning = useContext(runningContext);
     const speed = useContext(speedContext);
     const color = useContext(colorContext);
+    const tabGame = useRef(null);
 
     function PlayButton(isRunning : boolean, toggleRunning : () => void) {
         if(isRunning) {
@@ -41,18 +42,47 @@ export const Menu: FunctionComponent<MenuProps> = ({toggleRunning,setSpeed, setC
         )
     }
 
+    const openTab = (event : React.MouseEvent<HTMLElement> , tab : React.MutableRefObject<null> ) => {
+        // Declare all variables
+        /*var i, tabcontent, tablinks;
+
+        // Get all elements with class="tabcontent" and hide them
+        tabcontent = document.getElementsByClassName("tabcontent");
+        for (i = 0; i < tabcontent.length; i++) {
+            tabcontent[i].style.display = "none";
+        }
+
+        // Get all elements with class="tablinks" and remove the class "active"
+        tablinks = document.getElementsByClassName("tablinks");
+        for (i = 0; i < tablinks.length; i++) {
+            tablinks[i].className = tablinks[i].className.replace(" active", "");
+        }*/
+
+        /*let targetTab : MutableRefObject<HTMLDivElement> = tab.current;
+
+        targetTab.style.display = "block";*/
+
+        event.currentTarget.className += " active";
+    }
 
 
     return <>
-        <div className={style.item}>
-            { PlayButton(isRunning,toggleRunning) }
+        <div className={style.tabs}>
+            <button className={style.tab} onClick={(event) => {openTab(event,tabGame)}}>Game</button>
+            <button className={style.tab} onClick={() => {}}>Items</button>
         </div>
-        <div className={style.item}>
-            { Range(speed,setSpeed) }
+        <div id={style["gameTab"]} className={style.tabContent} ref={tabGame}>
+            <div className={style.item}>
+                { PlayButton(isRunning,toggleRunning) }
+            </div>
+            <div className={style.item}>
+                { Range(speed,setSpeed) }
+            </div>
+            <div className={style.item}>
+                { ColorPicker(color, setColor) }
+            </div>
         </div>
-        <div className={style.item}>
-            { ColorPicker(color, setColor) }
-        </div>
+
     </>;
 }
 
