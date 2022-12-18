@@ -1,6 +1,8 @@
 :root {
   --lines-number : 100;
   --columns-number : 100;
+  --color : #01A2E8;
+  --color-with-transparency : rgba(1, 162, 232, 0.3);
 }
 
 body {

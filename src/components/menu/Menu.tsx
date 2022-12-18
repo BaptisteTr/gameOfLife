@@ -1,24 +1,30 @@
-import React, {Dispatch, FunctionComponent, SetStateAction} from 'react';
+import React, { FunctionComponent, useContext} from 'react';
 import style from './Menu.module.css';
+import {runningContext} from "../../hooks/runningContext";
+import {speedContext} from "../../hooks/speedContext";
+import {colorContext} from "../../hooks/colorContext";
 
 type MenuProps = {
-    isRunning : boolean,
-    setRunning : Dispatch<SetStateAction<boolean>>,
-    speed : number,
-    setSpeed : Dispatch<SetStateAction<number>>,
+    toggleRunning : () => void,
+    setSpeed : (speed : number) => void,
+    setColor : (color : string) => void,
 }
 
-export const Menu: FunctionComponent<MenuProps> = ({isRunning,setRunning,speed,setSpeed}) => {
+export const Menu: FunctionComponent<MenuProps> = ({toggleRunning,setSpeed, setColor}) => {
 
-    function PlayButton(isRunning : boolean, setRunning : Dispatch<SetStateAction<boolean>>) {
+    const isRunning = useContext(runningContext);
+    const speed = useContext(speedContext);
+    const color = useContext(colorContext);
+
+    function PlayButton(isRunning : boolean, toggleRunning : () => void) {
         if(isRunning) {
-            return (<button className={style.itemContent} onClick={() => setRunning(false)}>Pause</button>);
+            return (<button className={style.itemContent} onClick={toggleRunning}>Pause</button>);
         } else {
-            return (<button className={style.itemContent} onClick={() => setRunning(true)}>Play</button>);
+            return (<button className={style.itemContent} onClick={toggleRunning}>Play</button>);
         }
     }
 
-    function Range(speed: number, setSpeed : Dispatch<SetStateAction<number>>) {
+    function Range(speed: number, setSpeed : (speed : number) => void) {
 
         return (
             <div className={style.itemContent}>
@@ -29,12 +35,23 @@ export const Menu: FunctionComponent<MenuProps> = ({isRunning,setRunning,speed,s
         );
     }
 
+    function ColorPicker(color: string, setColor : (color : string) => void) {
+        return (
+            <input type="color" value={color} onChange={(event) => setColor(event.target.value)}></input>
+        )
+    }
+
+
+
     return <>
         <div className={style.item}>
-            { PlayButton(isRunning,setRunning) }
+            { PlayButton(isRunning,toggleRunning) }
         </div>
         <div className={style.item}>
             { Range(speed,setSpeed) }
+        </div>
+        <div className={style.item}>
+            { ColorPicker(color, setColor) }
         </div>
     </>;
 }

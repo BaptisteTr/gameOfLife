@@ -9,9 +9,9 @@ type CellProps = {
     toggleValue : (rowIndex : number, columnIndex : number) => void
 }
 
-export const Cell: FunctionComponent<CellProps> = ({isAlive, color = "lightBlue", toggleValue, rowIndex, columnIndex}) => {
+export const Cell: FunctionComponent<CellProps> = ({isAlive, toggleValue, rowIndex, columnIndex}) => {
 
 
-return <div onClick={() => toggleValue(rowIndex, columnIndex)} className={style.cell +" "+ (isAlive ? style[color] : "")}>
+return <div onClick={() => toggleValue(rowIndex, columnIndex)} className={style.cell +" "+ (isAlive ? style.colored : "")}>
 </div>;
 }
