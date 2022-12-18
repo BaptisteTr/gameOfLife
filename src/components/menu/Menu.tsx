@@ -42,7 +42,7 @@ export const Menu: FunctionComponent<MenuProps> = ({toggleRunning,setSpeed, setC
         )
     }
 
-    const openTab = (event : React.MouseEvent<HTMLElement> , tab : React.MutableRefObject<null> ) => {
+    /*const openTab = (event : React.MouseEvent<HTMLElement> , tab : React.MutableRefObject<null> ) => {
         // Declare all variables
         /*var i, tabcontent, tablinks;
 
@@ -62,13 +62,13 @@ export const Menu: FunctionComponent<MenuProps> = ({toggleRunning,setSpeed, setC
 
         targetTab.style.display = "block";*/
 
-        event.currentTarget.className += " active";
-    }
+        /*event.currentTarget.className += " active";
+    }*/
 
 
     return <>
         <div className={style.tabs}>
-            <button className={style.tab} onClick={(event) => {openTab(event,tabGame)}}>Game</button>
+            <button className={style.tab} onClick={() => {}}>Game</button>
             <button className={style.tab} onClick={() => {}}>Items</button>
         </div>
         <div id={style["gameTab"]} className={style.tabContent} ref={tabGame}>
