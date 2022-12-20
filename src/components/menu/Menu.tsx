@@ -1,4 +1,5 @@
 import React, {FunctionComponent, useContext, useRef} from 'react';
+import Glider from '../../assets/glider.png';
 import style from './Menu.module.css';
 import {runningContext} from "../../hooks/runningContext";
 import {speedContext} from "../../hooks/speedContext";
@@ -15,7 +16,8 @@ export const Menu: FunctionComponent<MenuProps> = ({toggleRunning,setSpeed, setC
     const isRunning = useContext(runningContext);
     const speed = useContext(speedContext);
     const color = useContext(colorContext);
-    const tabGame = useRef(null);
+    const tabGame = useRef<HTMLDivElement | null>(null);
+    const tabItem = useRef<HTMLDivElement | null>(null);
 
     function PlayButton(isRunning : boolean, toggleRunning : () => void) {
         if(isRunning) {
@@ -42,36 +44,35 @@ export const Menu: FunctionComponent<MenuProps> = ({toggleRunning,setSpeed, setC
         )
     }
 
-    /*const openTab = (event : React.MouseEvent<HTMLElement> , tab : React.MutableRefObject<null> ) => {
-        // Declare all variables
-        /*var i, tabcontent, tablinks;
+    const openTab = (event: React.MouseEvent<HTMLElement>, tab: React.MutableRefObject<HTMLDivElement | null>) => {
+        var i, tabcontent, tablinks;
 
         // Get all elements with class="tabcontent" and hide them
-        tabcontent = document.getElementsByClassName("tabcontent");
+        tabcontent = document.getElementsByClassName(style.tabContent);
         for (i = 0; i < tabcontent.length; i++) {
-            tabcontent[i].style.display = "none";
+            tabcontent[i].id = "";
         }
 
         // Get all elements with class="tablinks" and remove the class "active"
-        tablinks = document.getElementsByClassName("tablinks");
+        tablinks = document.getElementsByClassName(style.buttonTab);
         for (i = 0; i < tablinks.length; i++) {
-            tablinks[i].className = tablinks[i].className.replace(" active", "");
-        }*/
+            tablinks[i].id = "";
+        }
 
-        /*let targetTab : MutableRefObject<HTMLDivElement> = tab.current;
+        if(tab.current != null) {
+            tab.current.id = style["activeTab"];
+        }
 
-        targetTab.style.display = "block";*/
-
-        /*event.currentTarget.className += " active";
-    }*/
+        event.currentTarget.id = style["activeTabLink"];
+    }
 
 
     return <>
         <div className={style.tabs}>
-            <button className={style.tab} onClick={() => {}}>Game</button>
-            <button className={style.tab} onClick={() => {}}>Items</button>
+            <button className={style.buttonTab} onClick={(event) => {openTab(event,tabGame)}}>Game</button>
+            <button className={style.buttonTab} onClick={(event) => {openTab(event,tabItem)}}>Items</button>
         </div>
-        <div id={style["gameTab"]} className={style.tabContent} ref={tabGame}>
+        <div id={style["activeTab"]}  className={style.tabContent} ref={tabGame}>
             <div className={style.item}>
                 { PlayButton(isRunning,toggleRunning) }
             </div>
@@ -80,6 +81,12 @@ export const Menu: FunctionComponent<MenuProps> = ({toggleRunning,setSpeed, setC
             </div>
             <div className={style.item}>
                 { ColorPicker(color, setColor) }
+            </div>
+        </div>
+
+        <div className={style.tabContent} ref={tabItem}>
+            <div className={style.item}>
+                <img src={Glider}  alt="glider"/>
             </div>
         </div>
 
