@@ -4,6 +4,8 @@ import style from './Menu.module.css';
 import {runningContext} from "../../hooks/runningContext";
 import {speedContext} from "../../hooks/speedContext";
 import {colorContext} from "../../hooks/colorContext";
+import {parseEtl} from "../../utils/etlParser";
+import {Pattern} from "../../utils/Pattern";
 
 type MenuProps = {
     toggleRunning : () => void,
@@ -18,6 +20,17 @@ export const Menu: FunctionComponent<MenuProps> = ({toggleRunning,setSpeed, setC
     const color = useContext(colorContext);
     const tabGame = useRef<HTMLDivElement | null>(null);
     const tabItem = useRef<HTMLDivElement | null>(null);
+
+    const testEtl = "#N Gosper glider gun\n" +
+        "#O Bill Gosper\n" +
+        "#C A true period 30 glider gun.\n" +
+        "#C The first known gun and the first known finite pattern with unbounded growth.\n" +
+        "#C www.conwaylife.com/wiki/index.php?title=Gosper_glider_gun\n" +
+        "x = 36, y = 9, rule = B3/S23\n" +
+        "24bo11b$22bobo11b$12b2o6b2o12b2o$11bo3bo4b2o12b2o$2o8bo5bo3b2o14b$2o8b\n" +
+        "o3bob2o4bobo11b$10bo5bo7bo11b$11bo3bo20b$12b2o!"
+
+    const pattern : Pattern = parseEtl(testEtl);
 
     function PlayButton(isRunning : boolean, toggleRunning : () => void) {
         if(isRunning) {
