@@ -1,9 +1,10 @@
 import {Pattern} from "./Pattern";
 
-export const parseEtl = (eltString : string) : Pattern => {
+export const parseRLE = (eltString : string) : Pattern => {
     let name = "",comment = "";
     let x = 0,y = 0;
     let grid : [boolean[]] = [[]];
+    grid.pop();
     eltString.split("\n").forEach((value) => {
         if (value.startsWith("#N")) {
             name = value.substring(3);
@@ -28,18 +29,34 @@ export const parseEtl = (eltString : string) : Pattern => {
                 let lineValue : boolean[] = [];
                 const regexp = /[0-9]*[bo]/g;
                 let result;
+                let column = 0;
 
                 while((result = regexp.exec(lineEncoded)) !== null) {
 
-                    console.log(result);
+                    let isAlive = result[0].at(result[0].length-1) === 'o';
+
+                    let thenum = result[0].match(/\d+/);
+                    if(thenum) {
+                        const numb : number = parseInt(thenum![0]);
+                        for(let i = 0; i < numb; i++) {
+                            lineValue.push(isAlive);
+                            column++;
+                        }
+                    } else {
+                        lineValue.push(isAlive);
+                        column++;
+                    }
                 }
 
-            })
+                while(column < x) {
+                    lineValue.push(false);
+                    column++;
+                }
 
+                grid.push(lineValue);
+            })
         }
     });
 
-    console.log(new Pattern(grid, name, comment, x, y ,""));
-
-    return new Pattern(grid, name, comment, x, y ,"");
+    return new Pattern(grid, name, comment, x, y ,"", true);
 }

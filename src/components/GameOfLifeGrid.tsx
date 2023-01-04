@@ -4,11 +4,17 @@ import {Cell} from "./cell/Cell";
 import useWindowDimensions from "../hooks/useWindowDimensions";
 import {runningContext} from "../hooks/runningContext";
 import {speedContext} from "../hooks/speedContext";
+import {currentPatternContext} from "../hooks/currentPatternContext";
+import {Pattern} from "../utils/Pattern";
 
 type GameOfLifeGridProps = {
 }
 
 export const GameOfLifeGrid: FunctionComponent<GameOfLifeGridProps> = () => {
+
+    //TODO Passer ici un currentHover column et currentHover row que pourra setter la cellule actuellement survolée
+    // S'en servir pour construire un masque du modèle à afficher et passer la grille de surbrillance aux cellules
+    // Probablement dans un useEffect en dépendance sur le state du row/column
 
     function calculateNextIteration(grid : [boolean[]]) : [boolean[]] {
         let nextGrid : [boolean[]] = [[]];
@@ -39,11 +45,43 @@ export const GameOfLifeGrid: FunctionComponent<GameOfLifeGridProps> = () => {
         return nextGrid;
     }
 
+    function displayHoverCurrentPattern(currentHoverRow : number, currentHoverColumn : number, currentPattern : Pattern, linesNumber : number, columnsNumber : number)  : [boolean[]] {
+        let resGrid : [boolean[]] = [[]];
+        resGrid.pop();
+
+        if(currentPattern.display) {
+
+            let midSectionY = Math.round(currentPattern.y/2);
+            let midSectionX = Math.round(currentPattern.x/2);
+            let firstPrintCellY = (currentHoverRow - midSectionY);
+            let lastPrintCellY = (currentHoverRow + midSectionY);
+            let firstPrintCellX = (currentHoverColumn - midSectionX);
+            let lastPrintCellX = (currentHoverColumn + midSectionX);
+
+            for(let i = 0; i < linesNumber; i++) {
+                let cellLine : boolean[] = [];
+                for(let j = 0; j < columnsNumber; j++) {
+                    if(i >= firstPrintCellY && i <= lastPrintCellY && j >= firstPrintCellX && j <= lastPrintCellX) {
+                        if((i - firstPrintCellY) >= 0 && (j - firstPrintCellX) >= 0 && (i - firstPrintCellY) < currentPattern.y && (j - firstPrintCellX) < currentPattern.x) {
+                            cellLine.push(currentPattern.grid[i - firstPrintCellY][j - firstPrintCellX]);
+                        } else {
+                            cellLine.push(false);
+                        }
+                    } else {
+                        cellLine.push(false);
+                    }
+                }
+                resGrid.push(cellLine);
+            }
+        }
+
+        return resGrid;
+    }
+
     function isAliveNextIteration(grid : [boolean[]], rowNumber : number, columnNumber : number) {
         let res : boolean = false;
 
         let adjacentCellsAlive = 0;
-
 
         const isAlive = grid[rowNumber][columnNumber];
 
@@ -64,36 +102,32 @@ export const GameOfLifeGrid: FunctionComponent<GameOfLifeGridProps> = () => {
         return res;
     }
 
-    const { height, width } = useWindowDimensions();
-    const linesNumber = Math.round((height * 0.5)/10);
-    const columnsNumber = Math.round((width * 0.5)/10);
-
-
-
-    let firstGrid : [boolean[]] = [[]]
-    firstGrid.pop()
-    for(let i = 0; i < linesNumber; i++) {
-        let cellLine : boolean[] = [];
-        for(let j = 0; j < columnsNumber; j++) {
-            cellLine.push(Math.random() > 0.7);
-        }
-        firstGrid.push(cellLine);
-    }
-
-    let [grid, setGrid] = useState<[boolean[]]>(firstGrid);
-    const isRunning = useContext(runningContext);
-    const speed = useContext(speedContext);
-
     function handleChildClick(rowIndex : number, columnIndex : number) {
         const newGrid = copyGrid(grid)
         newGrid[rowIndex][columnIndex] = !newGrid[rowIndex][columnIndex];
         setGrid(newGrid)
     }
 
-    document.documentElement.style.setProperty('--lines-number', linesNumber.toString());
-    document.documentElement.style.setProperty('--columns-number', columnsNumber.toString());
-    document.documentElement.style.setProperty('--grid-height', Math.round((height * 0.8)+linesNumber)+'px');
-    document.documentElement.style.setProperty('--grid-width', Math.round((width * 0.8)+columnsNumber)+'px');
+    function handleCellHover(rowIndex : number, columnIndex : number) {
+        setCurrenHoverColumn(columnIndex);
+        setCurrenHoverRow(rowIndex);
+        setHoverGrid(displayHoverCurrentPattern(rowIndex, columnIndex, currentPattern, linesNumber, columnsNumber));
+    }
+
+    const { height, width } = useWindowDimensions();
+    const linesNumber = Math.round((height * 0.5)/10);
+    const columnsNumber = Math.round((width * 0.5)/10);
+
+    let firstGrid : [boolean[]] = [[]];
+    firstGrid.pop()
+    for(let i = 0; i < linesNumber; i++) {
+        let cellLine : boolean[] = [];
+        for(let j = 0; j < columnsNumber; j++) {
+            //cellLine.push(Math.random() > 0.7);
+            cellLine.push(false);
+        }
+        firstGrid.push(cellLine);
+    }
 
     useEffect(() => {
         if(isRunning) {
@@ -102,14 +136,25 @@ export const GameOfLifeGrid: FunctionComponent<GameOfLifeGridProps> = () => {
         }
     }, )
 
+    let [grid, setGrid] = useState<[boolean[]]>(firstGrid);
+    let [hoverGrid, setHoverGrid] = useState<[boolean[]]>(firstGrid);
+    let [currentHoverRow, setCurrenHoverRow] = useState<number>(-1);
+    let [currentHoverColumn, setCurrenHoverColumn] = useState<number>(-1);
+    const isRunning = useContext(runningContext);
+    const speed = useContext(speedContext);
+    const currentPattern = useContext(currentPatternContext);
 
+    document.documentElement.style.setProperty('--lines-number', linesNumber.toString());
+    document.documentElement.style.setProperty('--columns-number', columnsNumber.toString());
+    document.documentElement.style.setProperty('--grid-height', Math.round((height * 0.8)+linesNumber)+'px');
+    document.documentElement.style.setProperty('--grid-width', Math.round((width * 0.8)+columnsNumber)+'px');
 
     let cells = grid.map((cellLine : boolean[], rowIndex) => {
         return cellLine.map((cell : boolean, columnIndex) => {
-            return <Cell  key={rowIndex+"-"+columnIndex} isAlive={cell} columnIndex={columnIndex} rowIndex={rowIndex} toggleValue={handleChildClick}></Cell>;
+            let isHovered = (hoverGrid[rowIndex] && hoverGrid[rowIndex][columnIndex]) ? hoverGrid[rowIndex][columnIndex] : false;
+            return <Cell  key={rowIndex+"-"+columnIndex} isAlive={cell} columnIndex={columnIndex} rowIndex={rowIndex} toggleValue={handleChildClick} handleCellHover={handleCellHover} isHovered={isHovered}></Cell>;
         })
     });
-
 
     return <>
         <div id={style["grid"]}> {cells}
