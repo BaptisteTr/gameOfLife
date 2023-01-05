@@ -43,6 +43,14 @@ export const Menu: FunctionComponent<MenuProps> = ({toggleRunning,setSpeed, setC
         }
     }
 
+    function ClearButton(clear : () => void) {
+        return <button className={style.itemContent} onClick={clear}>Clear</button>
+    }
+
+    function FillRandomly(fillRandomly : () => void) {
+        return <button className={style.itemContent} onClick={fillRandomly}>Random</button>
+    }
+
     function Range(speed: number, setSpeed : (speed : number) => void) {
 
         return (
@@ -91,6 +99,12 @@ export const Menu: FunctionComponent<MenuProps> = ({toggleRunning,setSpeed, setC
         <div id={style["activeTab"]}  className={style.tabContent} ref={tabGame}>
             <div className={style.item}>
                 { PlayButton(isRunning,toggleRunning) }
+            </div>
+            <div className={style.item}>
+                { ClearButton(toggleRunning) }
+            </div>
+            <div className={style.item}>
+                { FillRandomly(toggleRunning) }
             </div>
             <div className={style.item}>
                 { Range(speed,setSpeed) }

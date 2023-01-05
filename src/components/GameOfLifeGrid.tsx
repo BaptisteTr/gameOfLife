@@ -8,9 +8,10 @@ import {currentPatternContext} from "../hooks/currentPatternContext";
 import {Pattern} from "../utils/Pattern";
 
 type GameOfLifeGridProps = {
+    setPattern : (pattern : Pattern) => void
 }
 
-export const GameOfLifeGrid: FunctionComponent<GameOfLifeGridProps> = () => {
+export const GameOfLifeGrid: FunctionComponent<GameOfLifeGridProps> = ({setPattern}) => {
 
     //TODO Passer ici un currentHover column et currentHover row que pourra setter la cellule actuellement survolée
     // S'en servir pour construire un masque du modèle à afficher et passer la grille de surbrillance aux cellules
@@ -73,6 +74,8 @@ export const GameOfLifeGrid: FunctionComponent<GameOfLifeGridProps> = () => {
                 }
                 resGrid.push(cellLine);
             }
+        } else {
+
         }
 
         return resGrid;
@@ -108,6 +111,29 @@ export const GameOfLifeGrid: FunctionComponent<GameOfLifeGridProps> = () => {
         setGrid(newGrid)
     }
 
+    function printPattern(rowIndex : number, columnIndex : number) {
+        const newGrid = copyGrid(grid)
+
+        let midSectionY = Math.round(currentPattern.y/2);
+        let midSectionX = Math.round(currentPattern.x/2);
+        let firstPrintCellY = (rowIndex - midSectionY);
+        let lastPrintCellY = (rowIndex + midSectionY);
+        let firstPrintCellX = (columnIndex - midSectionX);
+        let lastPrintCellX = (columnIndex + midSectionX);
+
+        for(let i = 0; i < linesNumber; i++) {
+            for(let j = 0; j < columnsNumber; j++) {
+                if(i >= firstPrintCellY && i <= lastPrintCellY && j >= firstPrintCellX && j <= lastPrintCellX) {
+                    if((i - firstPrintCellY) >= 0 && (j - firstPrintCellX) >= 0 && (i - firstPrintCellY) < currentPattern.y && (j - firstPrintCellX) < currentPattern.x) {
+                        newGrid[i][j] = currentPattern.grid[i - firstPrintCellY][j - firstPrintCellX];
+                    }
+                }
+            }
+        }
+
+        setGrid(newGrid)
+    }
+
     function handleCellHover(rowIndex : number, columnIndex : number) {
         setCurrenHoverColumn(columnIndex);
         setCurrenHoverRow(rowIndex);
@@ -118,7 +144,7 @@ export const GameOfLifeGrid: FunctionComponent<GameOfLifeGridProps> = () => {
     const linesNumber = Math.round((height * 0.5)/10);
     const columnsNumber = Math.round((width * 0.5)/10);
 
-    let firstGrid : [boolean[]] = [[]];
+    let firstGrid : [boolean[]] = [[]]
     firstGrid.pop()
     for(let i = 0; i < linesNumber; i++) {
         let cellLine : boolean[] = [];
@@ -152,12 +178,12 @@ export const GameOfLifeGrid: FunctionComponent<GameOfLifeGridProps> = () => {
     let cells = grid.map((cellLine : boolean[], rowIndex) => {
         return cellLine.map((cell : boolean, columnIndex) => {
             let isHovered = (hoverGrid[rowIndex] && hoverGrid[rowIndex][columnIndex]) ? hoverGrid[rowIndex][columnIndex] : false;
-            return <Cell  key={rowIndex+"-"+columnIndex} isAlive={cell} columnIndex={columnIndex} rowIndex={rowIndex} toggleValue={handleChildClick} handleCellHover={handleCellHover} isHovered={isHovered}></Cell>;
+            return <Cell  key={rowIndex+"-"+columnIndex} isAlive={cell} columnIndex={columnIndex} rowIndex={rowIndex} toggleValue={handleChildClick} handleCellHover={handleCellHover} isHovered={isHovered} printPattern={printPattern}></Cell>;
         })
     });
 
     return <>
-        <div id={style["grid"]}> {cells}
+        <div id={style["grid"]}  onMouseLeave={() => setHoverGrid([[]]) } > {cells}
         </div>
     </>;
 }
