@@ -8,7 +8,6 @@ import {colorContext} from "./hooks/colorContext";
 import {currentPatternContext} from "./hooks/currentPatternContext";
 import {hoverGridContext} from "./hooks/hoverGrid";
 import {Pattern} from "./utils/Pattern";
-import useWindowDimensions from "./hooks/useWindowDimensions";
 
 function App() {
 
@@ -16,7 +15,7 @@ function App() {
     let [speed, setSpeed] = useState<number>(50);
     let [color, setColor] = useState<string>("#01A2E8");
     let [pattern, setPattern] = useState<Pattern>(new Pattern([],"","",0,0,"", false));
-    let [hoverGrid, setHoverGrid] = useState<[boolean[]]>([[]]);
+    let [hoverGrid] = useState<[boolean[]]>([[]]);
 
     const toggleRunning = () => {setRunning(isRunning => !isRunning)}
 

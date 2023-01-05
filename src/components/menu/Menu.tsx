@@ -33,7 +33,7 @@ export const Menu: FunctionComponent<MenuProps> = ({toggleRunning,setSpeed, setC
 
         const pattern : Pattern = parseRLE(testRLE);
         setPattern(pattern)
-    }, [])
+    }, [setPattern])
 
     function PlayButton(isRunning : boolean, toggleRunning : () => void) {
         if(isRunning) {

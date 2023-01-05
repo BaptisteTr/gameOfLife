@@ -164,8 +164,8 @@ export const GameOfLifeGrid: FunctionComponent<GameOfLifeGridProps> = ({setPatte
 
     let [grid, setGrid] = useState<[boolean[]]>(firstGrid);
     let [hoverGrid, setHoverGrid] = useState<[boolean[]]>(firstGrid);
-    let [currentHoverRow, setCurrenHoverRow] = useState<number>(-1);
-    let [currentHoverColumn, setCurrenHoverColumn] = useState<number>(-1);
+    let [, setCurrenHoverRow] = useState<number>(-1);
+    let [, setCurrenHoverColumn] = useState<number>(-1);
     const isRunning = useContext(runningContext);
     const speed = useContext(speedContext);
     const currentPattern = useContext(currentPatternContext);
