@@ -1,4 +1,12 @@
-import React, {FunctionComponent, useContext, useEffect, useState} from 'react';
+import React, {
+    ForwardedRef,
+    forwardRef,
+    FunctionComponent,
+    useContext,
+    useEffect,
+    useImperativeHandle,
+    useState
+} from 'react';
 import style from './GameOfLifeGrid.module.css';
 import {Cell} from "./cell/Cell";
 import useWindowDimensions from "../hooks/useWindowDimensions";
@@ -9,13 +17,10 @@ import {Pattern} from "../utils/Pattern";
 
 type GameOfLifeGridProps = {
     setPattern : (pattern : Pattern) => void
+    ref : ForwardedRef<any>
 }
 
-export const GameOfLifeGrid: FunctionComponent<GameOfLifeGridProps> = ({setPattern}) => {
-
-    //TODO Passer ici un currentHover column et currentHover row que pourra setter la cellule actuellement survolée
-    // S'en servir pour construire un masque du modèle à afficher et passer la grille de surbrillance aux cellules
-    // Probablement dans un useEffect en dépendance sur le state du row/column
+export const GameOfLifeGrid: FunctionComponent<GameOfLifeGridProps> = forwardRef(({setPattern}, ref) => {
 
     function calculateNextIteration(grid : [boolean[]]) : [boolean[]] {
         let nextGrid : [boolean[]] = [[]];
@@ -140,6 +145,33 @@ export const GameOfLifeGrid: FunctionComponent<GameOfLifeGridProps> = ({setPatte
         setHoverGrid(displayHoverCurrentPattern(rowIndex, columnIndex, currentPattern, linesNumber, columnsNumber));
     }
 
+    useImperativeHandle(ref, () => ({
+        clear() {
+            let firstGrid : [boolean[]] = [[]]
+            firstGrid.pop()
+            for(let i = 0; i < linesNumber; i++) {
+                let cellLine : boolean[] = [];
+                for(let j = 0; j < columnsNumber; j++) {
+                    cellLine.push(false);
+                }
+                firstGrid.push(cellLine);
+            }
+            setGrid(firstGrid)
+        },
+        fillRandom() {
+            let firstGrid : [boolean[]] = [[]]
+            firstGrid.pop()
+            for(let i = 0; i < linesNumber; i++) {
+                let cellLine : boolean[] = [];
+                for(let j = 0; j < columnsNumber; j++) {
+                    cellLine.push(Math.random() > 0.5);
+                }
+                firstGrid.push(cellLine);
+            }
+            setGrid(firstGrid)
+        }
+    }));
+
     const { height, width } = useWindowDimensions();
     const linesNumber = Math.round((height * 0.5)/10);
     const columnsNumber = Math.round((width * 0.5)/10);
@@ -186,4 +218,4 @@ export const GameOfLifeGrid: FunctionComponent<GameOfLifeGridProps> = ({setPatte
         <div id={style["grid"]}  onMouseLeave={() => setHoverGrid([[]]) } > {cells}
         </div>
     </>;
-}
+})

@@ -9,12 +9,14 @@ import {Pattern} from "../../utils/Pattern";
 
 type MenuProps = {
     toggleRunning : () => void,
+    clearGrid : () => void,
+    fillRandom : () => void,
     setSpeed : (speed : number) => void,
     setColor : (color : string) => void,
     setPattern : (pattern : Pattern) => void
 }
 
-export const Menu: FunctionComponent<MenuProps> = ({toggleRunning,setSpeed, setColor,setPattern}) => {
+export const Menu: FunctionComponent<MenuProps> = ({toggleRunning,setSpeed, setColor,setPattern,clearGrid, fillRandom}) => {
 
     const isRunning = useContext(runningContext);
     const speed = useContext(speedContext);
@@ -101,10 +103,10 @@ export const Menu: FunctionComponent<MenuProps> = ({toggleRunning,setSpeed, setC
                 { PlayButton(isRunning,toggleRunning) }
             </div>
             <div className={style.item}>
-                { ClearButton(toggleRunning) }
+                { ClearButton(clearGrid) }
             </div>
             <div className={style.item}>
-                { FillRandomly(toggleRunning) }
+                { FillRandomly(fillRandom) }
             </div>
             <div className={style.item}>
                 { Range(speed,setSpeed) }
