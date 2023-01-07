@@ -1,7 +1,7 @@
 import {Pattern} from "./Pattern";
 
 export const parseRLE = (eltString : string) : Pattern => {
-    let name = "",comment = "";
+    let name = "",comment = "", image = "";
     let x = 0,y = 0;
     let grid : [boolean[]] = [[]];
     grid.pop();
@@ -14,6 +14,8 @@ export const parseRLE = (eltString : string) : Pattern => {
             } else {
                 comment = value.substring(3);
             }
+        }  else if(value.startsWith("#F")) {
+            image = value.substring(3);
         } else if(value.startsWith("x")) {
             value.split(", ").forEach((val) => {
                 let numberValue : RegExpMatchArray | null = val.match(/\d+/);
@@ -25,7 +27,7 @@ export const parseRLE = (eltString : string) : Pattern => {
             })
         } else if (value.endsWith("!")) {
 
-            value.split("$").forEach((lineEncoded, index) => {
+            value.split("$").forEach((lineEncoded) => {
                 let lineValue : boolean[] = [];
                 const regexp = /[0-9]*[bo]/g;
                 let result;
@@ -58,5 +60,5 @@ export const parseRLE = (eltString : string) : Pattern => {
         }
     });
 
-    return new Pattern(grid, name, comment, x, y ,"", true);
+    return new Pattern(grid, name, comment, x, y ,"", true,image);
 }

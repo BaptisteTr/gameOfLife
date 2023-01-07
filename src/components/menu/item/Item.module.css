@@ -1,0 +1,19 @@
+.item {
+    width : 33%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+
+}
+
+.item > div {
+    display: flex;
+    flex-direction: column;
+}
+
+.itemImage {
+    max-height: 100px;
+    max-width: 100px;
+    cursor: pointer;
+}

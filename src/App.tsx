@@ -14,7 +14,7 @@ function App() {
     let [isRunning, setRunning] = useState<boolean>(false);
     let [speed, setSpeed] = useState<number>(50);
     let [color, setColor] = useState<string>("#01A2E8");
-    let [pattern, setPattern] = useState<Pattern>(new Pattern([],"","",0,0,"", false));
+    let [pattern, setPattern] = useState<Pattern>(new Pattern([],"","",0,0,"", false, ""));
     let [hoverGrid] = useState<[boolean[]]>([[]]);
     const ref : null | MutableRefObject<any> = useRef();
 

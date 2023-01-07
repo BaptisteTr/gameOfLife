@@ -1,11 +1,11 @@
-import React, {FunctionComponent, useContext, useEffect, useRef} from 'react';
-import Glider from '../../assets/glider.png';
+import React, {FunctionComponent, useContext, useRef} from 'react';
+import spaceships from "../../assets/spaceships";
 import style from './Menu.module.css';
 import {runningContext} from "../../hooks/runningContext";
 import {speedContext} from "../../hooks/speedContext";
 import {colorContext} from "../../hooks/colorContext";
-import {parseRLE} from "../../utils/rleParser";
 import {Pattern} from "../../utils/Pattern";
+import {Item} from "./item/Item";
 
 type MenuProps = {
     toggleRunning : () => void,
@@ -23,19 +23,7 @@ export const Menu: FunctionComponent<MenuProps> = ({toggleRunning,setSpeed, setC
     const color = useContext(colorContext);
     const tabGame = useRef<HTMLDivElement | null>(null);
     const tabItem = useRef<HTMLDivElement | null>(null);
-
-    useEffect(() => {
-        const testRLE = "#N Gosper glider gun\n" +
-            "#O Bill Gosper\n" +
-            "#C A true period 30 glider gun.\n" +
-            "#C The first known gun and the first known finite pattern with unbounded growth.\n" +
-            "#C www.conwaylife.com/wiki/index.php?title=Gosper_glider_gun\n" +
-            "x = 36, y = 9, rule = B3/S23\n" +
-            "24bo11b$22bobo11b$12b2o6b2o12b2o$11bo3bo4b2o12b2o$2o8bo5bo3b2o14b$2o8bo3bob2o4bobo11b$10bo5bo7bo11b$11bo3bo20b$12b2o!"
-
-        const pattern : Pattern = parseRLE(testRLE);
-        setPattern(pattern)
-    }, [setPattern])
+    let spaceshipsRle : string[] = spaceships.split("\n\n");
 
     function PlayButton(isRunning : boolean, toggleRunning : () => void) {
         if(isRunning) {
@@ -96,7 +84,7 @@ export const Menu: FunctionComponent<MenuProps> = ({toggleRunning,setSpeed, setC
     return <>
         <div className={style.tabs}>
             <button className={style.buttonTab} onClick={(event) => {openTab(event,tabGame)}}>Game</button>
-            <button className={style.buttonTab} onClick={(event) => {openTab(event,tabItem)}}>Items</button>
+            <button className={style.buttonTab} onClick={(event) => {openTab(event,tabItem)}}>Spaceships</button>
         </div>
         <div id={style["activeTab"]}  className={style.tabContent} ref={tabGame}>
             <div className={style.item}>
@@ -117,9 +105,9 @@ export const Menu: FunctionComponent<MenuProps> = ({toggleRunning,setSpeed, setC
         </div>
 
         <div className={style.tabContent} ref={tabItem}>
-            <div className={style.item}>
-                <img src={Glider}  alt="glider"/>
-            </div>
+            {spaceshipsRle.map( spaceship => {
+                return <Item rle={spaceship} setPattern={setPattern} />
+            })}
         </div>
 
     </>;
